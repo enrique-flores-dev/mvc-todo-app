@@ -2,9 +2,12 @@
 using mvctodolist.Data;
 using mvctodolist.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace mvctodolist.Controllers
 {
+    [Authorize]
     public class ToDoController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -14,9 +17,14 @@ namespace mvctodolist.Controllers
             _context = context;
         }
 
+        private string GetUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
+        }
+
         public IActionResult Index()
         {
-            var tasks = _context.ToDoItems.ToList();
+            var tasks = _context.ToDoItems.Where(t => t.UserId == GetUserId()).ToList();
             return View(tasks);
         }
 
@@ -28,7 +36,8 @@ namespace mvctodolist.Controllers
                 var item = new ToDoItem
                 {
                     Title = title.Trim(),
-                    IsComplete = false
+                    IsComplete = false,
+                    UserId = GetUserId()
                 };
                 _context.ToDoItems.Add(item);
                 _context.SaveChanges();
@@ -39,7 +48,7 @@ namespace mvctodolist.Controllers
         [HttpPost]
         public IActionResult CompleteTask(int id)
         {
-            var task = _context.ToDoItems.FirstOrDefault(t => t.Id == id);
+            var task = _context.ToDoItems.FirstOrDefault(t => t.Id == id && t.UserId == GetUserId());
             if (task != null)
             {
                 task.IsComplete = true;
@@ -51,7 +60,7 @@ namespace mvctodolist.Controllers
         [HttpPost]
         public IActionResult DeleteTask(int id)
         {
-            var task = _context.ToDoItems.FirstOrDefault(t => t.Id == id);
+            var task = _context.ToDoItems.FirstOrDefault(t => t.Id == id && t.UserId == GetUserId());
             if (task != null)
             {
                 _context.ToDoItems.Remove(task);

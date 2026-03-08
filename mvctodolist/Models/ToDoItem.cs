@@ -10,7 +10,9 @@ namespace mvctodolist.Models
         [StringLength(120)]
         public string Title { get; set; } = "";
 
-        public bool IsComplete { get; set; }  
+        public bool IsComplete { get; set; }
+
+        public string UserId { get; set; } = "";
     }
 }
 
