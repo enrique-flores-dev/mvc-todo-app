@@ -1,16 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using mvctodolist.Data;
 using mvctodolist.Models;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace mvctodolist.Controllers
 {
     public class ToDoController : Controller
     {
-        private static List<ToDoItem> _tasks = new();
+        private readonly ApplicationDbContext _context;
+
+        public ToDoController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
         public IActionResult Index()
         {
-            return View(_tasks);
+            var tasks = _context.ToDoItems.ToList();
+            return View(tasks);
         }
 
         [HttpPost]
@@ -20,38 +27,36 @@ namespace mvctodolist.Controllers
             {
                 var item = new ToDoItem
                 {
-                    Id = _tasks.Count + 1,
                     Title = title.Trim(),
                     IsComplete = false
                 };
-                _tasks.Add(item);
+                _context.ToDoItems.Add(item);
+                _context.SaveChanges();
             }
-
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         public IActionResult CompleteTask(int id)
         {
-            var task = _tasks.FirstOrDefault(t => t.Id == id);
-
+            var task = _context.ToDoItems.FirstOrDefault(t => t.Id == id);
             if (task != null)
             {
                 task.IsComplete = true;
+                _context.SaveChanges();
             }
             return RedirectToAction("Index");
         }
-        
+
         [HttpPost]
         public IActionResult DeleteTask(int id)
         {
-            var task = _tasks.FirstOrDefault(t => t.Id == id);
-
+            var task = _context.ToDoItems.FirstOrDefault(t => t.Id == id);
             if (task != null)
             {
-                _tasks.Remove(task);
+                _context.ToDoItems.Remove(task);
+                _context.SaveChanges();
             }
-
             return RedirectToAction("Index");
         }
     }
