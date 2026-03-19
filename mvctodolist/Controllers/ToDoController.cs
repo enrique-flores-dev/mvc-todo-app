@@ -68,5 +68,17 @@ namespace mvctodolist.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public IActionResult EditTask(int id)
+        {
+            var task = _context.ToDoItems.FirstOrDefault(t => t.Id == id && t.UserId == GetUserId());
+            if (task == null)
+            {
+                return RedirectToAction("Index");
+            }
+            return View("Edit",task);
+
+        }
     }
 }
