@@ -3,7 +3,7 @@ A to-do list web application built with ASP.NET Core MVC and SQLite.
 
 ## Features
 - User registration and login
-- Add, edit, complete, and delete tasks
+- Add, edit(in progress), complete, and delete tasks
 - Each user has their own private task list
 
 ## Technologies
