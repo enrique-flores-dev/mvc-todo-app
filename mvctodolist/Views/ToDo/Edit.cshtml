@@ -10,5 +10,10 @@
     <h1 class="display-4">Edit Task</h1>
 
     <p>
+        <form method="post" asp-action="EditTask">
+            <input type="text" name="title" value="@Model.Title" />
+            <input type="hidden" name="id" value="@Model.Id"/>
+            <button type="submit">Edit Task</button>
+        </form>
     </p>
 </div>

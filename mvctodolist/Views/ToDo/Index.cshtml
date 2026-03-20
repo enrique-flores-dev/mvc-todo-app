@@ -3,7 +3,7 @@
     To Do List page
 *@
 @{
-    ViewData["Title"] = "ToDo";
+    ViewData["Title"] = "To Do";
 }
 
 
@@ -55,6 +55,7 @@
                                             <button type="submit">Delete</button>
                                             </form>
 
+                                            <a asp-controller="ToDo" asp-action="EditTask" asp-route-id="@t.Id">Edit Task</a>
                                         }
                                 </li>
                             }
