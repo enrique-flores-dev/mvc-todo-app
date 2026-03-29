@@ -7,7 +7,7 @@
 }
 
 
-<div class="text-center">
+<div class="text-center p-3 mb-2 bg-secondary-subtle text-secondary-emphasis">
     <h1 class="display-4">My ToDo List</h1>
        
     <p>
@@ -28,34 +28,37 @@
                 else
                 {
                 
-                    <ul style="list-style-type:none; padding-left:0;">
+                    <ul class ="list-group">
                             @foreach (var t in Model)
                             {
-                                <li>
+                                <li class="list-group-item list-group-item-dark d-flex align-items-start @(!t.IsComplete ? "justify-content-between" : "justify-content-center")">
                                     @if (t.IsComplete)
                                         {
-                                            <span style="text-decoration: line-through;">@t.Title</span>
+                                            <span class="text-decoration-line-through fs-5">@t.Title</span>
+                                            
                                         }
                                     else
                                         {
-                                            <span>@t.Title</span>
+                                            <span class="text-primary fs-4">@t.Title</span>
                                         }
 
                                         @* Only show the Complete button if it's not complete yet *@
                                         
                                         @if (!t.IsComplete)
                                         {
-                                            <form method="post" asp-action="CompleteTask" style="display:inline;">
-                                            <input type="hidden" name="Id" value="@t.Id" />
-                                            <button type="submit">Task Complete</button>
-                                            </form>
+                                            <div class="d-flex gap-3">
+                                                <a asp-controller="ToDo" asp-action="EditTask" asp-route-id="@t.Id">Edit Task</a>
+                                            
+                                                <form method="post" asp-action="DeleteTask">
+                                                <input type="hidden" name="id" value="@t.Id" />
+                                                <button type="submit">Delete</button>
+                                                </form>
 
-                                            <form method="post" asp-action="DeleteTask" style="display:inline;">
-                                            <input type="hidden" name="id" value="@t.Id" />
-                                            <button type="submit">Delete</button>
-                                            </form>
-
-                                            <a asp-controller="ToDo" asp-action="EditTask" asp-route-id="@t.Id">Edit Task</a>
+                                                <form method="post" asp-action="CompleteTask">
+                                                <input type="hidden" name="Id" value="@t.Id" />
+                                                <button type="submit">Task Complete</button>
+                                                </form>
+                                            </div>
                                         }
                                 </li>
                             }
